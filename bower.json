@@ -1,0 +1,22 @@
+{
+  "name": "SimaApp",
+  "version": "0.0.1",
+  "description": "Sima off line",
+  "main": "index.html",
+  "authors": [
+    "Cristian Trujillo"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "iron-elements": "PolymerElements/iron-elements#^1.0",
+    "paper-elements": "PolymerElements/paper-elements#^1.0",
+    "neon-elements": "PolymerElements/neon-elements#^1.0"
+  }
+}

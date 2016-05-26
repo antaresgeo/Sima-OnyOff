@@ -1,0 +1,174 @@
+<dom-module id="app-sima">
+    <style>
+        #mainContent {
+            width: 100%;
+            height: 100%;
+        }       
+        paper-material {
+            width: calc(100% - 28px);
+            margin: 7px auto;
+            padding: 7px;
+            background-color: white;
+        }
+        #ctabs{
+            padding: 0;
+            width: calc(100% - 14px);
+            background-color: var(--accent-color);
+            color: #fff;
+        }
+        paper-menu {
+            padding: 0;
+        }
+        paper-menu:not(#ctrl) paper-item[aria-selected="true"] {
+            /*            border-left: 3px solid var(--dark-primary-color);*/
+            
+            border-right: 3px solid var(--accent-color);
+            border-bottom: 1px solid var(--accent-color);
+            background-color: rgba(68, 138, 255, 0.2);
+            color: var(--default-primary-color);
+        }
+    </style>
+    <template>
+        <paper-drawer-panel>
+            <div drawer>
+                <paper-menu selected="{{courseSelected}}">
+                    <template is="dom-repeat" items="{{courses}}">
+                        <paper-item><span>{{item.shortname}}</span>
+                        </paper-item>
+                    </template>
+                </paper-menu>
+            </div>
+            <div main>
+                <paper-toolbar>
+                    <div class="title">{{cfn}}</div>
+                    <div>
+                        <paper-icon-button icon="settings" on-click="ddOpen"></paper-icon-button>
+                        <iron-dropdown id="dd" horizontal-align="right" vertical-align="top">
+                            <div class="dropdown-content">
+                                <paper-menu id="ctrl">
+                                    <paper-item on-click="resetUser">Establecer usuario</paper-item>
+                                </paper-menu>
+                            </div>
+                        </iron-dropdown>
+                    </div>
+
+                </paper-toolbar>
+                <div id="mainContent">
+                    <iron-pages selected="{{courseSelected}}">
+                        <template is="dom-repeat" items="{{courses}}">
+                            <paper-header-panel  mode="waterfall">
+                                <paper-material elevation="1" id="ctabs">
+                                    <paper-tabs selected="{{sectionSelected}}">
+                                       <template is="dom-repeat" items="{{item.sections}}">
+                                            <template is="dom-if" if="{{item.section}}">
+                                               <paper-tab>{{item.section}}</paper-tab>
+                                            </template>
+                                           <template is="dom-if" if="{{!item.section}}">
+                                               <paper-tab>Topico <span>{{index}}</span></paper-tab>
+                                           </template>
+                                        </template>
+                                    </paper-tabs>
+                                </paper-material>
+                                <div class="sectionContent">
+                                    <iron-pages selected="{{sectionSelected}}">
+                                        <template is="dom-repeat" items="{{item.sections}}">
+                                            <section>
+                                                <template is="dom-if" if="{{item.sumary.length != 0}}">
+                                                    <paper-material elevation="1">{{item.sumary}}</paper-material>    
+                                                </template>
+                                                <template is="dom-repeat" items="{{item.modules}}">
+                                                    <paper-material elevation="1">
+                                                        <template is="dom-if" if="{{isModule(item.module, 12)}}">
+                                                            <ex-inner text="{{item.intro}}"></ex-inner>    
+                                                        </template>
+                                                        <template is="dom-if" if="{{isModule(item.module, 1)}}">
+                                                            <h4>{{item.name}}</h4>
+                                                            <ex-inner text="{{item.intro}}"></ex-inner>
+                                                            <paper-input label="Archivo" type="file"></paper-input>    
+                                                        </template>
+                                                        <template is="dom-if" if="{{isModule(item.module, 15)}}">
+                                                            <h4>{{item.name}}</h4>
+                                                            <ex-inner text="{{item.intro}}"></ex-inner>
+                                                        </template>
+                                                    </paper-material>
+                                                </template>
+                                                <paper-material elevation="1">{{item.id}}</paper-material>    
+                                            </section>
+                                        </template>        
+                                    </iron-pages>    
+                                </div>
+                            </paper-header-panel>
+                        </template>
+                    </iron-pages>
+                </div>
+            </div>
+        </paper-drawer-panel>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: 'app-sima',
+        courses: [],
+        properties: {
+            courseSelected: {
+                type: Number,
+                value: 0,
+                observer: 'courseSelectedChanged'
+            },
+            sectionSelected: {
+                type: Number,
+                value: 0
+            },
+            cfn: {
+                type: String,
+                computed: 'courseFullName(courseSelected)'
+            }
+        },
+        ready: function () {
+            this.courses = simaUserUDC;
+            console.log(simaUserUDC);
+        },
+        courseFullName: function (id) {
+            return simaUserUDC[id].fullname;
+        },
+        ddOpen: function () {
+            this.$.dd.open();
+        },
+        resetUser: function(){
+            var content = document.querySelector('#content');
+            restart_app(function(r){
+                sima(content);
+            });
+        },
+        courseSelectedChanged: function(){
+            this.sectionSelected = 0;
+        },
+        isE: function(a , b){
+            return a && b;
+        },
+        isModule: function(module, id){
+            return module == id;
+        }
+    });
+</script>
+<dom-module id="ex-inner">
+    <style>
+        :host{
+            text-align: left;
+        }
+    </style>
+</dom-module>
+<script>
+    Polymer({
+        is: "ex-inner",
+        properties: {
+            text: {
+                type: String,
+                observer: 'textChanged'
+            }
+        },
+        textChanged: function(){
+            this.innerHTML = this.text;
+        }
+    });
+</script>

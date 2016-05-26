@@ -13,7 +13,7 @@
             "fileSystem": ["write", "retainEntries", "directory"]
         },
         "storage",
-        "http://localhost:8080/tesis/"
+        "http://190.27.248.60:8088/sima-pruebas/"
     ],
     "file_handlers": {
         "text": {
